@@ -1,6 +1,7 @@
 from datetime import datetime
 from app.utils.core import db
 from flask import current_app
+import jwt
 
 class User(db.Model):
     """
@@ -113,7 +114,8 @@ class WXUser(db.Model):
             payload = jwt.decode(
                 token,
                 current_app.config['SECRET_KEY'],
-                algorithms=['HS256'])
+                algorithms=['HS256'],
+                audience="flask")
         except (jwt.exceptions.ExpiredSignatureError,
                 jwt.exceptions.InvalidSignatureError,
                 jwt.exceptions.DecodeError) as e:

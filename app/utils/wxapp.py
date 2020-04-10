@@ -5,6 +5,7 @@ from app.models.model import WXUser as User
 from weixin import WXAPPAPI
 import time
 import jwt
+from flask import current_app
 
 def get_wxapp_userinfo(encrypted_data, iv, code):
     '''
@@ -100,7 +101,7 @@ def create_token(user, db_conn):
         "iat": int(time.time()),
         "exp": int(time.time()) + 86400 * 7,
         "aud": 'flask',
-        "sub": str(account['openId']),
+        "openid": str(account['openId']),
         "nickname": account['nickName'],
         "scopes": ['open']
     }

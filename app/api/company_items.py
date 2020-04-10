@@ -4,7 +4,7 @@ from flask import Blueprint, jsonify, request, current_app
 from app.utils.util import route, Redis
 from app.utils.code import ResponseCode
 from app.utils.response import ResMsg
-from app.utils.auth import verify_jwt_token
+from app.utils.auth import token_auth
 import requests
 import logging
 import json
@@ -12,7 +12,7 @@ bp = Blueprint("companyitems", __name__, url_prefix='/api')
 logger = logging.getLogger(__name__)
 
 @route(bp,'/company_items/', methods=['GET'])
-@verify_jwt_token
+@token_auth.login_required
 def company_items():
     '''
     功能: 根据选择公司获取查询项（包括：信息个数，信息单价）
