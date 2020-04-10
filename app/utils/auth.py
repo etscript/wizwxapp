@@ -1,7 +1,7 @@
 import jwt
 from jwt.exceptions import ExpiredSignatureError
 from datetime import datetime, timedelta
-from flask import current_app, request, session, g
+from flask import current_app, request, session, g, jsonify
 from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth
 from functools import wraps
 from app.utils.code import ResponseCode
@@ -195,5 +195,5 @@ def token_auth_error():
     '''用于在 Token Auth 认证失败的情况下返回错误响应'''
     res = ResMsg()
     res.update(code=ResponseCode.PleaseSignIn)
-    return res.data
+    return jsonify(res.data)
         
