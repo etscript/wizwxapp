@@ -10,7 +10,7 @@ import logging
 from app.api import bp
 logger = logging.getLogger(__name__)
 
-@route(bp, '/wxusers/', methods=['POST'])
+@route(bp, '/wxusers', methods=['POST'])
 def create_wxuser():
     '''
     功能：登录或者注册一个新用户

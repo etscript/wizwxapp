@@ -11,7 +11,7 @@ import json
 from app.api import bp
 logger = logging.getLogger(__name__)
 
-@bp.route('/order_list/', methods=['GET'])
+@bp.route('/order_list', methods=['GET'])
 @token_auth.login_required
 def order_list():
     '''
