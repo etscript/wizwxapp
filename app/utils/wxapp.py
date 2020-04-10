@@ -104,7 +104,7 @@ def create_token(user, db_conn):
         "nickname": account['nickName'],
         "scopes": ['open']
     }
-    token = jwt.encode(payload, 'secret', algorithm='HS256')
+    token = jwt.encode(payload, current_app.config['SECRET_KEY'], algorithm='HS256')
     # save token openid session_key
     # sql_body = UserWXModel(id=token, openid=account['openId'],
     #                 session_key=session_key,created_time=datetime.now(),

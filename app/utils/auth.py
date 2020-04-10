@@ -6,6 +6,7 @@ from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth
 from functools import wraps
 from app.utils.code import ResponseCode
 from app.utils.util import ResMsg
+from app.models.model import WXUser
 
 token_auth = HTTPTokenAuth()
 
@@ -163,7 +164,7 @@ def verify_jwt_token(f):
             res.update(code=ResponseCode.PleaseSignIn)
             return res.data
         try:
-            payload = jwt.decode(token, 'secret',
+            payload = jwt.decode(token, current_app.config['SECRET_KEY'],
                                 algorithms=['HS256'])
             if payload["exp"] < int(time.time()):
                 res.update(code=ResponseCode.PleaseReSignIn)
@@ -172,8 +173,8 @@ def verify_jwt_token(f):
             res.update(code=ResponseCode.PleaseSignIn)
             return res.data
         if payload:
-            # 获取到用户并写入到session中,方便后续使用
-            session["user"] = payload["sub"]
+            # 获取到用户并写入到g.current_user中,方便后续使用
+            g.current_user = WXUser.verify_jwt(token) if token else None
             return f(*args, **kwargs)
         res.update(code=ResponseCode.PleaseSignIn)
         return res.data
@@ -183,7 +184,7 @@ def verify_jwt_token(f):
 def verify_token(token):
     res = ResMsg()
     '''用于检查用户请求是否有token，并且token真实存在，还在有效期内'''
-    g.current_user = User.verify_jwt(token) if token else None
+    g.current_user = WXUser.verify_jwt(token) if token else None
     # if g.current_user:
     #     # 每次认证通过后（即将访问资源API），更新 last_seen 时间
     #     g.current_user.ping()
