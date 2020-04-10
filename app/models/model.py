@@ -133,7 +133,7 @@ class Order(db.Model):
     complete = db.Column(db.DateTime, index=True)
     price = db.Column(db.String(128))
     email = db.Column(db.String(128))
-    user = db.Column(db.String(255), db.ForeignKey('WXUser.openid'))  # 属于哪个用户
+    user = db.Column(db.String(255), db.ForeignKey('wxuser.openid'))  # 属于哪个用户
 
     def to_dict(self):
         data = {
