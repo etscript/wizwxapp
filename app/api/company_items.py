@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #-*- coding: utf-8 -*-
-from flask import Blueprint, jsonify, request, current_app
+from flask import jsonify, request, current_app
 from app.utils.util import route, Redis
 from app.utils.code import ResponseCode
 from app.utils.response import ResMsg
@@ -8,7 +8,7 @@ from app.utils.auth import token_auth
 import requests
 import logging
 import json
-bp = Blueprint("companyitems", __name__, url_prefix='/api')
+from app.api import bp
 logger = logging.getLogger(__name__)
 
 @bp.route('/company_items/', methods=['GET'])

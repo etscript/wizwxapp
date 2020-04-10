@@ -1,14 +1,13 @@
 #!/usr/bin/env python
 #-*- coding: utf-8 -*-
-from flask import Blueprint, request, jsonify, url_for, g, current_app
+from flask import request, jsonify, url_for, g, current_app
 from app.utils.core import db
 from app.utils.util import route
 from app.utils.wxapp import create_token
 from app.utils.code import ResponseCode
 from app.utils.response import ResMsg
 import logging
-
-bp = Blueprint("wxusers", __name__, url_prefix='/api')
+from app.api import bp
 logger = logging.getLogger(__name__)
 
 @route(bp, '/wxusers/', methods=['POST'])

@@ -10,6 +10,7 @@ from app.celery import celery_app
 from app.utils.core import JSONEncoder, db, scheduler
 from app.api.router import router
 from flask_migrate import Migrate, MigrateCommand
+from app.api import bp as api_bp
 migrate = Migrate()
 
 def create_app(config_name, config_path=None):
@@ -30,7 +31,8 @@ def create_app(config_name, config_path=None):
     celery_app.conf.update({"broker_url": celery_conf, "result_backend": celery_conf})
 
     # 注册接口
-    register_api(app=app, routers=router)
+    # register_api(app=app, routers=router)
+    app.register_blueprint(api_bp, url_prefix='/api')
 
     # 返回json格式转换
     app.json_encoder = JSONEncoder

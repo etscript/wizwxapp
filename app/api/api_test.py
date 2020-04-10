@@ -2,7 +2,7 @@ import logging
 import random
 import uuid
 import os
-from flask import Blueprint, jsonify, session, request, current_app
+from flask import jsonify, session, request, current_app
 from datetime import datetime, timedelta
 from decimal import Decimal
 
@@ -25,7 +25,7 @@ from app.utils.wechat_utils import create_flag, \
 from elasticsearch import Elasticsearch
 es = Elasticsearch()
 
-bp = Blueprint("test", __name__, url_prefix='/api')
+from app.api import bp
 
 logger = logging.getLogger(__name__)
 # -----------------原生蓝图路由---------------#
