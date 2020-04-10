@@ -182,7 +182,6 @@ def verify_jwt_token(f):
 
 @token_auth.verify_token
 def verify_token(token):
-    res = ResMsg()
     '''用于检查用户请求是否有token，并且token真实存在，还在有效期内'''
     g.current_user = WXUser.verify_jwt(token) if token else None
     # if g.current_user:
@@ -194,6 +193,7 @@ def verify_token(token):
 @token_auth.error_handler
 def token_auth_error():
     '''用于在 Token Auth 认证失败的情况下返回错误响应'''
+    res = ResMsg()
     res.update(code=ResponseCode.PleaseSignIn)
     return res.data
         
