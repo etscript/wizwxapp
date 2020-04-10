@@ -11,7 +11,7 @@ import json
 bp = Blueprint("tianyancha", __name__, url_prefix='/api')
 logger = logging.getLogger(__name__)
 
-@route(bp,'/company_list/', methods=['GET'])
+@bp.route('/company_list/', methods=['GET'])
 @token_auth.login_required
 def company_list():
     '''

@@ -1,4 +1,4 @@
-from flask import request, current_app
+from flask import request, current_app, jsonify
 
 from app.utils.code import ResponseCode
 
@@ -54,4 +54,4 @@ class ResMsg(object):
         body["data"] = body.pop("_data")
         body["msg"] = body.pop("_msg")
         body["code"] = body.pop("_code")
-        return body
+        return jsonify(body)

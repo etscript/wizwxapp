@@ -11,7 +11,7 @@ import json
 bp = Blueprint("companyitems", __name__, url_prefix='/api')
 logger = logging.getLogger(__name__)
 
-@route(bp,'/company_items/', methods=['GET'])
+@bp.route('/company_items/', methods=['GET'])
 @token_auth.login_required
 def company_items():
     '''

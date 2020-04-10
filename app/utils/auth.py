@@ -195,5 +195,5 @@ def token_auth_error():
     '''用于在 Token Auth 认证失败的情况下返回错误响应'''
     res = ResMsg()
     res.update(code=ResponseCode.PleaseSignIn)
-    return jsonify(res.data)
+    return res.data
         
