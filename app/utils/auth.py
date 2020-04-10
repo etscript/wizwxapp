@@ -189,8 +189,11 @@ def verify_token(token):
     #     # 每次认证通过后（即将访问资源API），更新 last_seen 时间
     #     g.current_user.ping()
     #     db.session.commit()
-    if not g.current_user:
-        res.update(code=ResponseCode.PleaseSignIn)
-        return res.data
     return g.current_user is not None
+
+@token_auth.error_handler
+def token_auth_error():
+    '''用于在 Token Auth 认证失败的情况下返回错误响应'''
+    res.update(code=ResponseCode.PleaseSignIn)
+    return res.data
         
