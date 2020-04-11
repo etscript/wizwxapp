@@ -55,13 +55,13 @@ def orders():
         code = ResponseCode.InvalidParameter
         res.update(code = code, data='未找到用户信息')
         return res.data
-    orders = Order.query.filter(Order.wxuser_openid = user.openid).all()
+    orders = Order.query.filter(Order.wxuser_openid == user.to_dict()["openid"]).all()
     data = Order.to_collection_dict(orders)
 
     # 制作返回内容
     return ResMsg(data = data).data
 
-@bp.route('/send_order', methods=['GET'])
+@bp.route('/send_order', methods=['POST'])
 @token_auth.login_required
 def send_order():
     '''
@@ -92,7 +92,7 @@ def send_order():
         return ResMsg(code=code, data=data).data
 
     order = Order()
-    data["wxuser_openid"] = g.current_user.openid
+    data["wxuser_openid"] = g.current_user.to_dict()["openid"]
     order.from_dict(data)
     
     db.session.add(order)

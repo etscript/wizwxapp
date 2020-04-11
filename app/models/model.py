@@ -129,7 +129,7 @@ class Order(db.Model):
     __tablename__ = 'order'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     status = db.Column(db.String(128))
-    name = db.Column(db.String(255))
+    company = db.Column(db.String(255))
     create = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     start = db.Column(db.DateTime, index=True)
     complete = db.Column(db.DateTime, index=True)
@@ -142,19 +142,18 @@ class Order(db.Model):
         data = {
             'id': self.id,
             'status': self.status,
-            'name': self.name,
+            'company': self.company,
             'create': self.create,
             'start': self.start,
             'complete': self.complete,
             'price': self.price,
             'email': self.email,
-            'timestamp': self.timestamp,
             'code': self.code
         }
         return data
 
     def from_dict(self, data):
-        for field in ['status', 'name', 'price', 'email', 'code', 'wxuser_openid']:
+        for field in ['status', 'company', 'price', 'email', 'code', 'wxuser_openid']:
             if field in data:
                 setattr(self, field, data[field])
 
