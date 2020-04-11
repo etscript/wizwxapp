@@ -133,7 +133,7 @@ class Order(db.Model):
     create = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     start = db.Column(db.DateTime, index=True)
     complete = db.Column(db.DateTime, index=True)
-    price = db.Column(db.String(128))
+    price = db.Column(db.Float)
     email = db.Column(db.String(128))
     wxuser_openid = db.Column(db.String(255), db.ForeignKey('wxuser.openid'))  # 属于哪个用户
     code = db.Column(db.String(255))
