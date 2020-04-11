@@ -135,7 +135,8 @@ class Order(db.Model):
     complete = db.Column(db.DateTime, index=True)
     price = db.Column(db.String(128))
     email = db.Column(db.String(128))
-    user = db.Column(db.String(255), db.ForeignKey('wxuser.openid'))  # 属于哪个用户
+    wxuser_openid = db.Column(db.String(255), db.ForeignKey('wxuser.openid'))  # 属于哪个用户
+    code = db.Column(db.String(255))
 
     def to_dict(self):
         data = {
@@ -146,11 +147,20 @@ class Order(db.Model):
             'start': self.start,
             'complete': self.complete,
             'price': self.price,
-            'email': self.email
+            'email': self.email,
+            'timestamp': self.timestamp,
+            'code': self.code
         }
         return data
 
     def from_dict(self, data):
-        for field in ['status', 'name', 'price', 'email', ]:
+        for field in ['status', 'name', 'price', 'email', 'code', 'wxuser_openid']:
             if field in data:
                 setattr(self, field, data[field])
+
+    @staticmethod
+    def to_collection_dict(query, page=1, per_page=10, **kwargs):
+        # 如果当前没有任何资源时，或者前端请求的 page 越界时，都会抛出 404 错误
+        # 由 @bp.app_errorhandler(404) 自动处理，即响应 JSON 数据：{ error: "Not Found" }
+        # resources = query.paginate(page, per_page)
+        return [item.to_dict() for item in query]

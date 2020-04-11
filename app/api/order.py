@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #-*- coding: utf-8 -*-
-from flask import jsonify, request, current_app
+from flask import jsonify, request, current_app, g
 from app.utils.util import route, Redis
 from app.utils.code import ResponseCode
 from app.utils.response import ResMsg
@@ -9,75 +9,95 @@ import requests
 import logging
 import json
 from app.api import bp
+from app.utils.core import db
+from app.models.model import Order, WXUser
 logger = logging.getLogger(__name__)
 
-@bp.route('/order_list', methods=['GET'])
+@bp.route('/orders', methods=['GET'])
 @token_auth.login_required
-def order_list():
+def orders():
     '''
-    功能: 公司搜索，模糊匹配
+    功能: 查询某个人的所有订单
 
-    参数: "search":"上海思华"
+    参数: 无
 
     返回格式: {
         "code": 0,
-        "data": [
-            {
-                "base": "上海",
-                "companyType": 1,
-                "estiblishTime": "2000-08-15 00:00:00.0",
-                "id": 1032774619,
-                "legalPersonName": "孙逸浪",
-                "name": "<em>上海思华</em>科技股份有限公司",
-                "regCapital": "10750万人民币",
-                "type": 1
+        "lang": "zh_CN",
+        "msg": "成功!",
+        "data": [{
+            "status": "complete",
+            "company": "上海思华科技股份有限公司上海思华科技股份有限公司",
+            "create": "2000-08-15 00:00:00.0",
+            "id": 234,
+            "price": "39.9人民币",
+            "email": "example@qq.com",
+            "code": 4.246256245624246e+35
             },
             {
-                "base": "上海",
-                "companyType": 1,
-                "estiblishTime": "1994-05-05 00:00:00.0",
-                "id": 1136050774,
-                "legalPersonName": "陈愉",
-                "name": "<em>上海思华</em>咨询有限公司",
-                "regCapital": "15万美元",
-                "type": 1
-            },...],
-            "lang": "zh_CN",
-            "msg": "成功"
-        }
+            "status": "checking",
+            "company": "上海思华科技股份有限公司",
+            "create": "2000-08-15 00:00:00.0",
+            "id": 234,
+            "price": "39.9人民币",
+            "email": "example@qq.com",
+            "code": 23456254
+            }
+        ]
+    }
 
     '''
     # 创建返回内容模板
     res = ResMsg()
-    # 获取公司名称关键字
-    word = request.args.get("search")
-    if not word:
+    # 获取用户信息
+    user = g.current_user
+    if not user:
         code = ResponseCode.InvalidParameter
-        res.update(code = code, data='请输入公司名称关键字')
+        res.update(code = code, data='未找到用户信息')
         return res.data
-    # 从Redis获取
-    req = Redis.read(word+"company_list")
-    # 如果Redis中有记录，转换类型。如果没有历史记录，请求天眼查获取，并写入Redis。
-    if req:
-        req = json.loads(req)
-    else:
-        # 头部内容，包括天眼查token
-        header = {"Authorization":current_app.config.get('tianyancha_token'),
-                    "Content-Type":"application/x-www-form-urlencoded"}
-        # 天眼查api地址
-        url = current_app.config.get('tianyancha_search_company_url') + word
-        # 请求返回
-        req = requests.get(url, headers=header)
-        # 错误内容提示稍后再试
-        if req.status_code != 200:
-            code = ResponseCode.InvalidParameter
-            res.update(code = code, data="请稍安勿躁，休息片刻再试。")
-            return res.data
-        req= req.json()
-        Redis.write(word+"company_list", json.dumps(req), 86400)
+    orders = Order.query.filter(Order.wxuser_openid = user.openid).all()
+    data = Order.to_collection_dict(orders)
 
     # 制作返回内容
-    code = ResponseCode.Success
-    res.update(code = code, data = req["result"]["items"])
-    return res.data
+    return ResMsg(data = data).data
+
+@bp.route('/send_order', methods=['GET'])
+@token_auth.login_required
+def send_order():
+    '''
+    功能: 小程序下单
+
+    参数: {
+      "status": "complete", // 已完成
+      "company": '上海思华科技股份有限公司',
+      "price": '39.9人民币',
+      "email": 'example@qq.com',
+      "code": 424625624562 // 订单号
+    }
+
+    返回格式: {
+      "status": "complete", // 已完成
+      "company": '上海思华科技股份有限公司',
+      "create": "2000-08-15 00:00:00.0",
+      "id": 234,
+      "price": '39.9人民币',
+      "email": 'example@qq.com',
+      "code": 424625624562 // 订单号
+    }
+    '''
+    data = request.get_json()
+    if not data:
+        code = ResponseCode.InvalidParameter
+        data = 'You must post JSON data.'
+        return ResMsg(code=code, data=data).data
+
+    order = Order()
+    data["wxuser_openid"] = g.current_user.openid
+    order.from_dict(data)
+    
+    db.session.add(order)
+    db.session.commit()
+    
+    # 制作返回内容
+    return ResMsg(data = data).data
 

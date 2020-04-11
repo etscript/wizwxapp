@@ -1944,3 +1944,8 @@ Fetching access token
  * Restarting with stat
  * Debugger is active!
  * Debugger PIN: 853-269-254
+ * Running on http://127.0.0.1:5001/ (Press CTRL+C to quit)
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 853-269-254
+127.0.0.1 - - [11/Apr/2020 17:56:10] "GET /api/orders HTTP/1.1" 500 -
