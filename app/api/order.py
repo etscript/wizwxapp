@@ -107,7 +107,7 @@ def send_order():
 
 @bp.route('/order', methods=['PUT'])
 @token_auth.login_required
-def send_order():
+def edit_order():
     '''
     功能: 小程序订单状态修改
 

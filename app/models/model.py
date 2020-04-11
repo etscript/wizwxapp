@@ -157,7 +157,7 @@ class Order(db.Model):
             if field in data:
                 setattr(self, field, data[field])
             if field == "status" and data["status"] == "complete":
-                setattr(self, "complete", datetime.utcnow)
+                setattr(self, "complete", datetime.now())
 
     @staticmethod
     def to_collection_dict(query, page=1, per_page=10, **kwargs):
