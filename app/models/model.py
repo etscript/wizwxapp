@@ -136,7 +136,8 @@ class Order(db.Model):
     price = db.Column(db.Float)
     email = db.Column(db.String(128))
     wxuser_openid = db.Column(db.String(255), db.ForeignKey('wxuser.openid'))  # 属于哪个用户
-    code = db.Column(db.String(255))
+    code = db.Column(db.String(255), index=True)
+    payid = db.Column(db.String(255))
 
     def to_dict(self):
         data = {
@@ -148,12 +149,13 @@ class Order(db.Model):
             'complete': self.complete,
             'price': self.price,
             'email': self.email,
-            'code': self.code
+            'code': self.code,
+            'payid': self.payid
         }
         return data
 
     def from_dict(self, data):
-        for field in ['status', 'company', 'price', 'email', 'code', 'wxuser_openid']:
+        for field in ['status', 'company', 'price', 'email', 'code', 'wxuser_openid', 'payid']:
             if field in data:
                 setattr(self, field, data[field])
             if field == "status" and data["status"] == "complete":
