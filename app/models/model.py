@@ -156,6 +156,8 @@ class Order(db.Model):
         for field in ['status', 'company', 'price', 'email', 'code', 'wxuser_openid']:
             if field in data:
                 setattr(self, field, data[field])
+            if field == "status" and data["status"] == "complete":
+                setattr(self, "complete", datetime.utcnow)
 
     @staticmethod
     def to_collection_dict(query, page=1, per_page=10, **kwargs):

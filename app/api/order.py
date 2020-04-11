@@ -105,3 +105,39 @@ def send_order():
     # 制作返回内容
     return ResMsg(data = data).data
 
+@bp.route('/order', methods=['PUT'])
+@token_auth.login_required
+def send_order():
+    '''
+    功能: 小程序订单状态修改
+
+    参数: {
+      "id": 123,
+      "status": "状态", // complete, checking
+    }
+
+    返回格式: {
+      "status": "complete", // 已完成
+      "company": '上海思华科技股份有限公司',
+      "create": "2000-08-15 00:00:00.0",
+      "complete": "2000-08-15 00:00:00.0",
+      "id": 234,
+      "price": 39.9,
+      "code": "sdasdasdsadsadsadasd" // 订单号,
+    }
+    '''
+    data = request.get_json()
+    if not data:
+        code = ResponseCode.InvalidParameter
+        data = 'You must post JSON data.'
+        return ResMsg(code=code, data=data).data
+    
+    id = data["id"]
+    status = data["status"]
+    order = Order.query.get_or_404(id)
+    order.from_dict(data)
+    db.session.commit()
+
+    # 制作返回内容
+    return ResMsg(data = data).data
+
