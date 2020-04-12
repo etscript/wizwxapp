@@ -11,6 +11,8 @@ from app.utils.core import JSONEncoder, db, scheduler
 from app.api.router import router
 from flask_migrate import Migrate, MigrateCommand
 from app.api import bp as api_bp
+from flask_mail import Mail
+mail = Mail()
 migrate = Migrate()
 
 def create_app(config_name, config_path=None):
@@ -42,7 +44,9 @@ def create_app(config_name, config_path=None):
     db.init_app(app)
     migrate.init_app(app, db)
 
-
+    # 注册邮件功能
+    mail.init_app(app) 
+       
     # 启动定时任务
     if app.config.get("SCHEDULER_OPEN"):
         scheduler_init(app)
