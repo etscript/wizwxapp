@@ -187,7 +187,7 @@ def order_send_mail(id):
                recipients=[email],
                text_body='text_body',
                html_body=html_body,
-               attachments=['/root/1.zip'])
+               attachments=['/root/wiz-wxapp.tar.gz'])
 
     # 制作返回内容
     return ResMsg(data = data).data

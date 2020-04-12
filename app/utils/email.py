@@ -2,6 +2,7 @@ from threading import Thread
 from flask import current_app
 from flask_mail import Message
 from flask_mail import Mail
+import os
 mail = Mail()
 
 def send_async_email(app, msg):
@@ -18,7 +19,7 @@ def send_email(subject, sender, recipients, text_body, html_body,
         for attachment in attachments:
             # msg.attach(*attachment)
             file_name = os.path.basename(attachment)
-            with app.open_resource(attachment) as fp:
+            with current_app.open_resource(attachment) as fp:
                 msg.attach(file_name, 'application/x-gzip', fp.read())
 
     if sync:
