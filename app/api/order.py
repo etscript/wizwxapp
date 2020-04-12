@@ -171,8 +171,8 @@ def order_send_mail(id):
     send_email(data["type"] + " : " + order.company,
                sender=current_app.config['MAIL_SENDER'],
                recipients=email,
-               text_body=text_body,
-               html_body=html_body)
+               text_body='text_body',
+               html_body="<p>Dear,</p>")
 
     # 制作返回内容
     return ResMsg(data = data).data
