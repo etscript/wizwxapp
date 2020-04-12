@@ -16,7 +16,11 @@ def send_email(subject, sender, recipients, text_body, html_body,
     msg.html = html_body
     if attachments:
         for attachment in attachments:
-            msg.attach(*attachment)
+            # msg.attach(*attachment)
+            file_name = os.path.basename(attachment)
+            with app.open_resource(attachment) as fp:
+                msg.attach(file_name, 'application/x-gzip', fp.read())
+
     if sync:
         mail.send(msg)
     else:

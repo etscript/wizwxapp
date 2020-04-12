@@ -171,6 +171,14 @@ def order_send_mail(id):
         data = 'You must post JSON data.'
         return ResMsg(code=code, data=data).data
 
+    html_body = '''
+    <p>亲爱的用户你好,</p>
+    <p>感谢您使用核查宝小程序!</p>
+    <p>生成的文件见附件，请查收!</p>
+    <p>Sincerely,</p>
+    <p>The hechabao app Team</p>
+    <p><small>Note: replies to this email address are not monitored.</small></p>
+    '''
     order = Order.query.get_or_404(id)
     result_address = order.to_dict()["result"]
     email = data["email"] if data["email"] else g.current_user.email
@@ -178,7 +186,8 @@ def order_send_mail(id):
                sender=current_app.config['MAIL_SENDER'],
                recipients=[email],
                text_body='text_body',
-               html_body="<p>Dear,</p>")
+               html_body=html_body,
+               attachments=['/root/1.zip'])
 
     # 制作返回内容
     return ResMsg(data = data).data
