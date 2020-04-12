@@ -64,13 +64,14 @@ class ChangeLogs(db.Model):
 class WXUser(db.Model):
     # 设置数据库表名
     __tablename__ = 'wxuser'
-    id = db.Column(db.Integer, autoincrement=True)
+    id = db.Column(db.Integer, index=True, autoincrement=True)
     nickname = db.Column(db.String(128))
-    openid = db.Column(db.String(255), primary_key=True)
+    openid = db.Column(db.String(255), index=True, primary_key=True)
     gender = db.Column(db.String(64))  
     country = db.Column(db.String(128))
     province = db.Column(db.String(128))
     city = db.Column(db.String(128))
+    email = db.Column(db.String(255), index=True)
 
     def to_dict(self):
         data = {

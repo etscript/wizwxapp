@@ -61,7 +61,7 @@ def orders():
         code = ResponseCode.InvalidParameter
         res.update(code = code, data='未找到用户信息')
         return res.data
-    orders = Order.query.filter(Order.wxuser_openid == user.to_dict()["openid"]).all()
+    orders = Order.query.filter(Order.wxuser_openid == user.openid).all()
     data = Order.to_collection_dict(orders)
 
     # 制作返回内容
