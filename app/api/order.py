@@ -164,7 +164,12 @@ def order_send_mail(id):
       "code": "sdasdasdsadsadsadasd" // 订单号,
     }
     '''
-
+    data = request.get_json()
+    if not data:
+        code = ResponseCode.InvalidParameter
+        data = 'You must post JSON data.'
+        return ResMsg(code=code, data=data).data
+        
     order = Order.query.get_or_404(id)
     result_address = order.to_dict()["result"]
     email = data["email"] if data["email"] else g.current_user.email
