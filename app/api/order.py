@@ -107,7 +107,7 @@ def send_order():
 
 @bp.route('/order/<int:id>', methods=['PUT'])
 @token_auth.login_required
-def order_send_mail():
+def edit_order(id):
     '''
     功能: 小程序订单状态修改
 
@@ -143,7 +143,7 @@ def order_send_mail():
 
 @bp.route('/order/<int:id>/mail', methods=['POST'])
 @token_auth.login_required
-def edit_order():
+def order_send_mail(id):
     '''
     功能: 小程序订单任务完成，通过邮件发送结果
 
