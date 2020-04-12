@@ -12,6 +12,7 @@ import time
 from app.api import bp
 from app.utils.core import db
 from app.models.model import Order, WXUser
+from app.utils.email import send_email
 logger = logging.getLogger(__name__)
 
 # 生成订单号
