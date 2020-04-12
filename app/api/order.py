@@ -169,13 +169,13 @@ def order_send_mail(id):
         code = ResponseCode.InvalidParameter
         data = 'You must post JSON data.'
         return ResMsg(code=code, data=data).data
-        
+
     order = Order.query.get_or_404(id)
     result_address = order.to_dict()["result"]
     email = data["email"] if data["email"] else g.current_user.email
     send_email(data["type"] + " : " + order.company,
                sender=current_app.config['MAIL_SENDER'],
-               recipients=email,
+               recipients=[email],
                text_body='text_body',
                html_body="<p>Dear,</p>")
 
