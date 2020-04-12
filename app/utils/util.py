@@ -47,8 +47,8 @@ class Redis(object):
         else:
             expire_in_seconds = current_app.config['REDIS_EXPIRE']
         r = cls._get_r()
-        #r.set(key, value, ex=expire_in_seconds)
-        r.set(key, value)
+        r.set(key, value, ex=expire_in_seconds)
+        # r.set(key, value)
 
     @classmethod
     def read(cls, key):

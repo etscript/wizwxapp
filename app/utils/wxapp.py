@@ -6,6 +6,7 @@ from weixin import WXAPPAPI
 import time
 import jwt
 from flask import current_app
+from app.utils.util import Redis
 
 def get_wxapp_userinfo(encrypted_data, iv, code):
     '''
@@ -112,6 +113,8 @@ def create_token(user, db_conn):
     #                 updated_time=datetime.now())
     # db.session.add(sql_body)
     # db.session.commit()
+    # 将session_key 缓存至redis中，有效期为一个半小时，微信官方现在是两个小时有效期。
+    Redis.write(str(account['openId']), session_key, 90*60)
 
     return True, {'access_token': token,
                   'nickname': account['nickName'],

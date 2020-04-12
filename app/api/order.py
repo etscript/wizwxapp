@@ -105,15 +105,17 @@ def send_order():
     # 制作返回内容
     return ResMsg(data = data).data
 
-@bp.route('/order', methods=['PUT'])
+@bp.route('/order/<int:id>', methods=['PUT'])
 @token_auth.login_required
 def edit_order():
     '''
     功能: 小程序订单状态修改
 
-    参数: {
-      "id": 123,
+    参数: 
+    <int:id> 订单的id
+    {
       "status": "状态", // complete, checking
+      "result": "生成文件的地址" //绝对路径
     }
 
     返回格式: {
@@ -132,11 +134,45 @@ def edit_order():
         data = 'You must post JSON data.'
         return ResMsg(code=code, data=data).data
     
-    id = data["id"]
-    status = data["status"]
     order = Order.query.get_or_404(id)
     order.from_dict(data)
     db.session.commit()
+
+    # 制作返回内容
+    return ResMsg(data = data).data
+
+@bp.route('/order/<int:id>/mail', methods=['POST'])
+@token_auth.login_required
+def edit_order():
+    '''
+    功能: 小程序订单任务完成，通过邮件发送结果
+
+    参数: 
+    <int:id> 订单的id
+    {
+      "type": "尽调报告结果",
+      "email": "sadasd@asdasd.com"
+    }
+
+    返回格式: {
+      "status": "complete", // 已完成
+      "company": '上海思华科技股份有限公司',
+      "create": "2000-08-15 00:00:00.0",
+      "complete": "2000-08-15 00:00:00.0",
+      "id": 234,
+      "price": 39.9,
+      "code": "sdasdasdsadsadsadasd" // 订单号,
+    }
+    '''
+
+    order = Order.query.get_or_404(id)
+    result_address = order.to_dict()["result"]
+    email = data["email"] if data["email"] else g.current_user.email
+    send_email(data["type"] + " : " + order.company,
+               sender=current_app.config['MAIL_SENDER'],
+               recipients=email,
+               text_body=text_body,
+               html_body=html_body)
 
     # 制作返回内容
     return ResMsg(data = data).data
