@@ -11,8 +11,7 @@ from app.utils.core import JSONEncoder, db, scheduler
 from app.api.router import router
 from flask_migrate import Migrate, MigrateCommand
 from app.api import bp as api_bp
-from flask_mail import Mail
-mail = Mail()
+from app.utils.email import mail
 migrate = Migrate()
 
 def create_app(config_name, config_path=None):
