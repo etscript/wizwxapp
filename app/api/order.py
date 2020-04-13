@@ -185,7 +185,6 @@ def order_send_mail(id):
     send_email(data["type"] + " : " + order.company,
                sender=current_app.config['MAIL_SENDER'],
                recipients=[email],
-               text_body='text_body',
                html_body=html_body,
                attachments=['/root/wiz-wxapp.tar.gz'])
 
